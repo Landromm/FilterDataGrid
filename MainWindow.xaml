@@ -1,0 +1,76 @@
+﻿<Window x:Class="FilterDataGrid.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:FilterDataGrid"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="450" Width="800">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="75"/>
+            <RowDefinition Height="300*"/>
+            <RowDefinition Height="75"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="75"/>
+            <ColumnDefinition Width="181*"/>
+        </Grid.ColumnDefinitions>
+
+        <Border Grid.Column="1" Grid.Row="1"
+                Background="Blue"
+                Margin="5">
+            <DataGrid x:Name="dtGrid"
+                      Margin="5">                
+            </DataGrid>            
+        </Border>
+
+        <StackPanel 
+            Orientation="Horizontal"
+            Grid.Column="1">
+            <TextBox Background="Aqua"                     
+                     Height="25"
+                     Width="150"
+                     Margin="5"
+                     x:Name="filter" TextChanged="Filter_TextChanged"/>
+            <Button Background="Aqua"
+                    Content="Поиск"
+                    Height="25"
+                    Width="50"
+                    HorizontalAlignment="Right"
+                    BorderBrush="Black"
+                    BorderThickness="2"
+                    Click="Button_Click_Search"/>
+        </StackPanel>
+
+        <StackPanel 
+            Orientation="Vertical"                    
+            Grid.Row="1">
+            <Button
+                    Height="40"
+                    Margin="5"
+                    Content="Кнопка №1"
+                    FontSize="10">
+            </Button>
+            <Button
+                    Height="40"
+                    Margin="5"
+                    Content="Кнопка №2"
+                    FontSize="10">
+            </Button>
+            <Button
+                    Height="40"
+                    Margin="5"
+                    Content="Кнопка №3"
+                    FontSize="10">
+            </Button>
+            <Button
+                    Height="40"
+                    Margin="5"
+                    Content="Кнопка №4"
+                    FontSize="10">
+            </Button>
+        </StackPanel>  
+
+    </Grid>
+</Window>
