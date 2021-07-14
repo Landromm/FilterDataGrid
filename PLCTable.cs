@@ -25,6 +25,16 @@ namespace FilterDataGrid
             Comment = comment;
         }
 
+        public PLCTable()
+        {
+            Console.WriteLine("Использование пустого конструктора.");
+        }
+
+        public string[] nameFieldPLCTable = new string[] { "Наименование", 
+                                                            "Производитель",
+                                                            "Модель",
+                                                            "Количество модулей"};
+
         public int Id { get; private set; }
         public string Name { get; private set; }
         public string Fabric { get; private set; }
