@@ -71,7 +71,7 @@
                     Height="40"
                     Margin="5"
                     Content="Обновить"
-                    FontSize="10" Click="Button_Click">
+                    FontSize="10" Click="Button_Click_Refresh">
             </Button>
             <Button
                     Height="40"

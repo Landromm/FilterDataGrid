@@ -15,7 +15,9 @@ namespace FilterDataGrid
     public partial class MainWindow : Window
     {
         PLCTable PLCTable = new PLCTable();
+
         static ObservableCollection<PLCTable> ObColl = new ObservableCollection<PLCTable>();
+
         public MainWindow()
         {
             InitializeComponent();
@@ -69,6 +71,12 @@ namespace FilterDataGrid
         }
         private void GetDataTablePLC()
         {
+            if (ObColl != null)
+            {
+                ObColl.Clear();
+            }
+            
+
             OleDbDataAdapter da = SelectTable(SelectPLCTable());
 
             OleDbCommand cmd = new OleDbCommand(SelectPLCTable(), OpenConnectDataBase());
@@ -94,23 +102,16 @@ namespace FilterDataGrid
                 ObColl.Add(pLCTable);
             }
 
-            CollectionViewSource _itemSourceList = new CollectionViewSource() { Source = ObColl };
-            ICollectionView Itemlist = _itemSourceList.View;
-
-            dtGrid.ItemsSource = Itemlist;
-
-            //var _itemSourceList = new CollectionViewSource() { Source = ObColl };
+            //CollectionViewSource _itemSourceList = new CollectionViewSource() { Source = ObColl };
             //ICollectionView Itemlist = _itemSourceList.View;
-            //var stringFilter = filter.Text;
-            //var yourCostumFilter = new Predicate<object>(item => ((PLCTable)item).Name.Contains(stringFilter));
-            //Itemlist.Filter = yourCostumFilter;
-            //dtGrid.ItemsSource = Itemlist;
-            // Collection which will take your Filter
+
+            dtGrid.ItemsSource = ObColl;
+
         }
 
         private void Button_Click_Search(object sender, RoutedEventArgs e)
         {
-            GetDataTablePLC();
+            ReturnFilterTable();
         }
 
 
@@ -141,7 +142,7 @@ namespace FilterDataGrid
             }
         }
 
-        private void filter_TextChanged(object sender, TextChangedEventArgs e)
+        private void ReturnFilterTable()
         {
             CollectionViewSource _itemSourceList = new CollectionViewSource() { Source = ObColl };
             //now we add our Filter
@@ -153,7 +154,12 @@ namespace FilterDataGrid
             dtGrid.ItemsSource = Itemlist;
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
+        private void filter_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            ReturnFilterTable();
+        }
+
+        private void Button_Click_Refresh(object sender, RoutedEventArgs e)
         {
             GetDataTablePLC();
         }
