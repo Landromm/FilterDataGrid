@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Data.OleDb;
 using System.Windows;
 using System.Windows.Controls;
@@ -12,16 +14,24 @@ namespace FilterDataGrid
     /// </summary>
     public partial class MainWindow : Window
     {
-
-        CollectionViewSource viewSource;
+        PLCTable PLCTable = new PLCTable();
+        static ObservableCollection<PLCTable> ObColl = new ObservableCollection<PLCTable>();
         public MainWindow()
         {
             InitializeComponent();
+
+
+            foreach (string newField in PLCTable.nameFieldPLCTable)
+            {
+                cbSearchIteam.Items.Add(newField);
+            }
+            cbSearchIteam.SelectedIndex = 0;
+
             GetDataTablePLC();
         }
 
         public string connection = @"Provider = Microsoft.Jet.OLEDB.4.0; Data Source = \\orion\users\OASUTP\Инфа для деж. АСУТП\DataBaseTest НЕ УДАЛЯТЬ\DB_Warehouse.mdb"; // путь к базе данных
-
+        //public string connection = @"Provider = Microsoft.Jet.OLEDB.4.0; Data Source = D:\DB_Warehouse.mdb";
         public OleDbConnection OpenConnectDataBase()
         {
             OleDbConnection connect = new OleDbConnection(connection); // подключаемся к базе данных
@@ -60,15 +70,6 @@ namespace FilterDataGrid
         private void GetDataTablePLC()
         {
             OleDbDataAdapter da = SelectTable(SelectPLCTable());
-            //OleDbCommandBuilder commandBuilder = new OleDbCommandBuilder(da);
-
-            //DataSet ds = new DataSet();
-            //da.Fill(ds, "ПЛК");
-
-            //dtGrid.ItemsSource = ds.Tables["ПЛК"].DefaultView;
-            //ConnectClose();
-
-            List<PLCTable> lstSource = new List<PLCTable>();
 
             OleDbCommand cmd = new OleDbCommand(SelectPLCTable(), OpenConnectDataBase());
             OleDbDataReader reader = cmd.ExecuteReader();
@@ -83,39 +84,78 @@ namespace FilterDataGrid
                 string ip = reader.GetString(5);
                 string district = reader.GetString(6);
                 string typeOfObject = reader.GetString(7);
-                string numberOfObject = reader.GetString(8); 
+                string numberOfObject = reader.GetString(8);
                 string place = reader.GetString(9);
                 string typeBoard = reader.GetString(10);
                 int number = reader.GetInt32(11);
                 string comment = reader.GetString(12);
 
                 PLCTable pLCTable = new PLCTable(id, name, fabric, model, countModul, ip, district, typeOfObject, numberOfObject, place, typeBoard, number, comment);
-                lstSource.Add(pLCTable);
+                ObColl.Add(pLCTable);
             }
 
+            CollectionViewSource _itemSourceList = new CollectionViewSource() { Source = ObColl };
+            ICollectionView Itemlist = _itemSourceList.View;
 
-            viewSource = new CollectionViewSource();
-            viewSource.Source = lstSource;
-            //var yourCostumFilter = new Predicate<object>(item => ((PLCTable)item).Name.Contains("ADAM 5510"));
-            //viewSource.Filter += ViewSource_Filter;
-            dtGrid.ItemsSource = viewSource.View;
-        }
+            dtGrid.ItemsSource = Itemlist;
 
-
-        void ViewSource_Filter(object sender, FilterEventArgs e)
-        {
-            //e.Accepted = ((PLCTable)e.Item).IndexOf(filter.Text) >= 0;
-            
-        }
-
-        private void Filter_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            viewSource.View.Refresh();
+            //var _itemSourceList = new CollectionViewSource() { Source = ObColl };
+            //ICollectionView Itemlist = _itemSourceList.View;
+            //var stringFilter = filter.Text;
+            //var yourCostumFilter = new Predicate<object>(item => ((PLCTable)item).Name.Contains(stringFilter));
+            //Itemlist.Filter = yourCostumFilter;
+            //dtGrid.ItemsSource = Itemlist;
+            // Collection which will take your Filter
         }
 
         private void Button_Click_Search(object sender, RoutedEventArgs e)
         {
+            GetDataTablePLC();
+        }
 
+
+        // Возвращает BOOL в соответсвие с выбранным значением в CombobBox (по какой колонке будем искать)
+        public bool ReturnFilterField(FilterEventArgs e, string field)
+        {
+
+            var comBoxField = cbSearchIteam.SelectedValue.ToString();
+            var obj = e.Item as PLCTable;
+            switch (comBoxField)
+            {
+                case "Наименование": return obj.Name.Contains(field);
+                case "Производитель": return obj.Fabric.Contains(field);
+                default: return obj.Name.Contains(field);
+            }
+        }
+
+        private void yourFilter(object sender, FilterEventArgs e)
+        {
+            var stringFilter = filter.Text;
+            var obj = e.Item as PLCTable;
+            if (obj != null)
+            {
+                if (ReturnFilterField(e, stringFilter))
+                    e.Accepted = true;
+                else
+                    e.Accepted = false;
+            }
+        }
+
+        private void filter_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            CollectionViewSource _itemSourceList = new CollectionViewSource() { Source = ObColl };
+            //now we add our Filter
+            _itemSourceList.Filter += new FilterEventHandler(yourFilter);
+
+            // ICollectionView the View/UI part 
+            ICollectionView Itemlist = _itemSourceList.View;
+
+            dtGrid.ItemsSource = Itemlist;
+        }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            GetDataTablePLC();
         }
     }
 }

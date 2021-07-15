@@ -21,8 +21,23 @@
                 Background="Blue"
                 Margin="5">
             <DataGrid x:Name="dtGrid"
-                      Margin="5">                
-            </DataGrid>            
+                      Margin="5"
+                      AutoGenerateColumns="False">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Наименование" Binding="{Binding Name}"/>
+                    <DataGridTextColumn Header="Производитель" Binding="{Binding Fabric}"/>
+                    <DataGridTextColumn Header="Модель" Binding="{Binding Model}"/>
+                    <DataGridTextColumn Header="Количество модулей" Binding="{Binding CountModul}"/>
+                    <DataGridTextColumn Header="IP Адрес" Binding="{Binding Ip}"/>
+                    <DataGridTextColumn Header="Район" Binding="{Binding District}"/>
+                    <DataGridTextColumn Header="Тип объекта" Binding="{Binding TypeOfObject}"/>
+                    <DataGridTextColumn Header="Номер объекта" Binding="{Binding NumberOfObject}"/>
+                    <DataGridTextColumn Header="Местонахождение" Binding="{Binding Place}"/>
+                    <DataGridTextColumn Header="Тип шкафа" Binding="{Binding TypeBoard}"/>
+                    <DataGridTextColumn Header="Инвентарный номер" Binding="{Binding Number}"/>
+                    <DataGridTextColumn Header="Комментарий" Binding="{Binding Comment}"/>
+                </DataGrid.Columns>
+            </DataGrid>
         </Border>
 
         <StackPanel 
@@ -32,7 +47,13 @@
                      Height="25"
                      Width="150"
                      Margin="5"
-                     x:Name="filter" TextChanged="Filter_TextChanged"/>
+                     x:Name="filter" TextChanged="filter_TextChanged" />
+            <ComboBox Background="Aqua"                     
+                     Height="25"
+                     Width="150"
+                     Margin="5"
+                     x:Name="cbSearchIteam"/>
+
             <Button Background="Aqua"
                     Content="Поиск"
                     Height="25"
@@ -49,8 +70,8 @@
             <Button
                     Height="40"
                     Margin="5"
-                    Content="Кнопка №1"
-                    FontSize="10">
+                    Content="Обновить"
+                    FontSize="10" Click="Button_Click">
             </Button>
             <Button
                     Height="40"
@@ -70,7 +91,7 @@
                     Content="Кнопка №4"
                     FontSize="10">
             </Button>
-        </StackPanel>  
+        </StackPanel>
 
     </Grid>
 </Window>
